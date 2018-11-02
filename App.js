@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import VRNavigator from './js'
+import ARNavigator from './js';
+import Provider from "react-redux/es/components/Provider";
 
 export default class Main extends Component {
     constructor(props){
@@ -7,7 +8,7 @@ export default class Main extends Component {
     }
     render(){
         return(
-            <VRNavigator/>
+            <ARNavigator/>
         )
     }
 };

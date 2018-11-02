@@ -6,7 +6,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "mac": "source ~/.bash_profile",
-    "vr": "react-native run-android --variant=gvrDebugJsAndAssets"
+    "vr": "react-native run-android --variant=gvrDebug"
   },
   "dependencies": {
     "axios": "^0.18.0",

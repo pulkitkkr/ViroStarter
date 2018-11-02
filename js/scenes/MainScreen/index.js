@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import GenreScreen from "../chatSystem";
 
 import {
+    ViroARScene,
     ViroScene,
     ViroText,
     Viro360Image,
@@ -27,7 +28,9 @@ class MainScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+	        text : "Initializing AR..."
+        }
     }
     onSpeechResults = (result)=>{
         const speechResult = result.value;
@@ -52,21 +55,22 @@ class MainScreen extends React.Component {
         },2800)
 
     };
+	_onInitialized=(state, reason)=> {
+		if (state == ViroConstants.TRACKING_NORMAL) {
+			this.setState({
+				text : "Hello World!"
+			});
+		} else if (state == ViroConstants.TRACKING_NONE) {
+			// Handle loss of tracking
+		}
+	}
+}
     render() {
         return (
-            <ViroScene>
-                <ViroParticleEmitter
-                    position={[0, 4.5, 0]}
-                    duration={2000}
-                    run={true}
-                    emissionRatePerSecond = {100}
-                    image={{
-                        source:require("./res/particle_snow.png"),
-                        height:0.1,
-                        width:0.1,
-                    }}
-                />
-            </ViroScene>
+		        <ViroARScene onTrackingUpdated={this._onInitialized} >
+			        <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
+		        </ViroARScene>
+
         );
     }
 
