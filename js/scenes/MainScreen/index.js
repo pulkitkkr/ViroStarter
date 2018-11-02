@@ -64,10 +64,10 @@ class MainScreen extends React.Component {
 			// Handle loss of tracking
 		}
 	}
-}
-    render() {
+
+    render(){
         return (
-		        <ViroARScene onTrackingUpdated={this._onInitialized} >
+		        <ViroARScene >
 			        <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
 		        </ViroARScene>
 
