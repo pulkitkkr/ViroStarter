@@ -30,7 +30,9 @@ const Styles = StyleSheet.create({
         top: 0,
         zIndex: 10000,
         backgroundColor: "#00000000",
-        minWidth: width
+        minWidth: width,
+        padding: 0,
+        margin: 0
     }
 });
 export default connect(mapStateToProps)(CrossOverlay);
