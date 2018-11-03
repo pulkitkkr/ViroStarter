@@ -1,4 +1,16 @@
-import {ADD_GENRE, LIKE_OLD, LIKE_MALE} from '../actions'
+import {ADD_GENRE, LIKE_OLD, LIKE_MALE, SET_OVERLAY, CLEAR_OVERLAY} from '../actions'
+
+export const setOverlay = (dispatch, content) => {
+    dispatch({
+        type: SET_OVERLAY,
+        payload: content
+    });
+};
+export const clearOverlay = (dispatch) => {
+    dispatch({
+        type: CLEAR_OVERLAY
+    });
+};
 
 export const addGenre = (dispatch, genre) => {
     console.log("Dispatching", genre);

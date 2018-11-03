@@ -1,18 +1,14 @@
 'use strict';
 import React, { Component } from 'react';
-import SceneBackground from './assests/welcomeBg360.jpg';
-import lightSound from './assests/lightsound.mp3';
-import {StyleSheet} from 'react-native';
+import { clearOverlay, setOverlay } from '../../actions/actionCreators';
+import {StyleSheet, View, Text} from 'react-native';
+import MainScreenOverlay from './overlays';
 import {connect} from 'react-redux';
 
 import {
     ViroARScene,
-    ViroScene,
     ViroText,
-    Viro360Image,
-    ViroQuad,
-    ViroMaterials,
-    ViroSound
+    ViroMaterials
 } from 'react-viro';
 import {hearVoice, SpeakText} from "../../common/speechUtils";
 
@@ -31,7 +27,11 @@ class MainScreen extends React.Component {
 	        text : "Initializing AR..."
         }
     }
-
+    componentDidMount(){
+        const { clearOverlay, setOverlay} = this.props;
+        clearOverlay();
+        setOverlay(<MainScreenOverlay/>);
+    }
     render(){
         return (
 		        <ViroARScene >
@@ -54,4 +54,10 @@ const mapStateToProps = (state) => {
         UserDetails: state.UserDetails
     }
 }
-export default connect(mapStateToProps)(MainScreen);
+const mapDispatchToProps = (dispatch) => {
+  return {
+      clearOverlay: () => clearOverlay(dispatch),
+      setOverlay: (content) => setOverlay(dispatch, content)
+  }
+};
+export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);
