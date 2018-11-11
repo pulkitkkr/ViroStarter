@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux';
-import UserDetailsReducer from './UserDetailsReducer'
 import overlayReducer from './overlayReducer';
+import locationReducer from './locationReducer'
 export default combineReducers({
-    UserDetails: UserDetailsReducer,
-    overlay: overlayReducer
+    overlay: overlayReducer,
+    location: locationReducer
 });

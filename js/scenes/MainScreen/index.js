@@ -10,7 +10,6 @@ import {
     ViroText,
     ViroMaterials
 } from 'react-viro';
-import {hearVoice, SpeakText} from "../../common/speechUtils";
 
 ViroMaterials.createMaterials({
     heart: {
@@ -34,7 +33,7 @@ class MainScreen extends React.Component {
     }
     render(){
         return (
-		        <ViroARScene >
+		        <ViroARScene>
 			        <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
 		        </ViroARScene>
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, StatusBar, StyleSheet, PermissionsAndroid} from 'react-native'
+import { Text, View, StatusBar, StyleSheet, PermissionsAndroid } from 'react-native'
 import { Header } from 'react-native-elements'
 
 class MainScreenOverlay extends React.Component {
@@ -8,30 +8,30 @@ class MainScreenOverlay extends React.Component {
         this.state = {
             initialPosition: 'unknown',
             lastPosition: 'unknown',
+            accessGranted: false
         }
     }
-
- requestCameraPermission = async () => {
-    try {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            {
-                'title': 'Cool Photo App Camera Permission',
-                'message': 'Cool Photo App needs access to your camera ' +
-                    'so you can take awesome pictures.'
+    requestLocationPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                {
+                    'title': 'MSIT Minor Project AR Location Request',
+                    'message': 'We need to access your location' +
+                        'so we can find awesome places near you.'
+                }
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("You can use the Location Services now");
+            } else {
+                console.log("Location Permission denied");
             }
-        )
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log("You can use the camera")
-        } else {
-            console.log("Camera permission denied")
+        } catch (err) {
+            console.warn(err);
         }
-    } catch (err) {
-        console.warn(err)
-    }
-}
+    };
     componentDidMount = async () => {
-        await this.requestCameraPermission();
+        await this.requestLocationPermission();
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const initialPosition = JSON.stringify(position);
@@ -44,10 +44,10 @@ class MainScreenOverlay extends React.Component {
             const lastPosition = JSON.stringify(position);
             this.setState({ lastPosition });
         });
-    }
+    };
     componentWillUnmount = () => {
         navigator.geolocation.clearWatch(this.watchID);
-    }
+    };
     render() {
         return(
             <React.Fragment>
@@ -78,11 +78,11 @@ class MainScreenOverlay extends React.Component {
                         {this.state.lastPosition}
                     </Text>
                 </View>
-
             </React.Fragment>
         );
     }
-};
+}
+
 const styles = StyleSheet.create ({
     container: {
         flex: 1,
@@ -97,5 +97,5 @@ const styles = StyleSheet.create ({
         fontSize: 18,
         color: '#ffffff',
     }
-})
-export default MainScreenOverlay;
+});
+export default MainScreenOverlay; 
