@@ -3,13 +3,14 @@ package com.virosample;
 import android.app.Application;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNSimpleCompassPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.wenkesj.voice.VoicePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.airbnb.android.react.maps.MapsPackage;
-
+import com.reactlibrary.RNSimpleCompassPackage;
 import com.viromedia.bridge.ReactViroPackage;
 import com.facebook.soloader.SoLoader;
 import com.mihir.react.tts.*; // Import package
@@ -31,6 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNSimpleCompassPackage(),
             new VectorIconsPackage(),
             new VoicePackage(),
           new ReactViroPackage(ReactViroPackage.ViroPlatform.valueOf(BuildConfig.VR_PLATFORM)),

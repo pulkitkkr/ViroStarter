@@ -4478,6 +4478,10 @@ react-native-maps@^0.22.1:
   version "0.22.1"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.22.1.tgz#ce856e71970e872e596e6fa4773279cae2c4dcdd"
 
+react-native-simple-compass@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-simple-compass/-/react-native-simple-compass-1.0.0.tgz#ac60ff5e060c800941ff5c0432120b2986a8a69a"
+
 react-native-speech@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/react-native-speech/-/react-native-speech-0.1.2.tgz#c16127c6a61351eeddb7878db80709f7ce6a7057"
