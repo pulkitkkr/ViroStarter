@@ -11,6 +11,7 @@ import {
 
 // Overlay reducers
 export const setOverlay = (dispatch, content) => {
+    console.log(dispatch)
     dispatch({
         type: SET_OVERLAY,
         payload: content

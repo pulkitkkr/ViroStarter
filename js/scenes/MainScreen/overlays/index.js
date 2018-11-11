@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, View, StatusBar, StyleSheet, PermissionsAndroid } from 'react-native';
 import { connect } from 'react-redux';
 import { Header, Card, Button, Icon} from 'react-native-elements';
+import {NearbyPlaces} from '../../index';
 import Geolocation from 'react-native-geolocation-service';
 import MapView from 'react-native-maps';
 import { Dimensions } from 'react-native';
@@ -39,7 +40,6 @@ class MainScreenOverlay extends React.Component {
                 console.log("You can use the Location Services now");
                 Geolocation.getCurrentPosition(
                     (position) => {
-                        console.log(position)
                         const lat = parseFloat(position.coords.latitude);
                         const long = parseFloat(position.coords.longitude);
                         const initialPosition = {
@@ -81,6 +81,8 @@ class MainScreenOverlay extends React.Component {
     render() {
         const { showLoader } = this.state;
         const { locationData : {initialPosition} } = this.props;
+        const {sceneNavigator} = this.props;
+        console.table(this.props)
         let locationData = initialPosition;
         let initialRegion = {
             latitude: locationData.latitude,
@@ -96,7 +98,6 @@ class MainScreenOverlay extends React.Component {
                 longitudeDelta: 0.0421,
             }
         }
-        console.log("locationData is:",locationData, "Initial  region is: ",initialRegion);
         return(
             <React.Fragment>
                 <StatusBar
@@ -140,6 +141,7 @@ class MainScreenOverlay extends React.Component {
                                     </MapView>
                                 </View>
                                 <Button
+                                    onPress={()=>{console.log("xvsgfgdgdfgdfgdgdbdbdf",NearbyPlaces);sceneNavigator.replace({scene: NearbyPlaces})}}
                                     icon={
                                         <Icon
                                             name='arrow-right'
@@ -154,11 +156,9 @@ class MainScreenOverlay extends React.Component {
                                     }}
                                     title='Continue'
                                 />
-
                             </Card>
                         )
                 }
-
             </React.Fragment>
         );
     }

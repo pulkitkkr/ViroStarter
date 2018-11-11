@@ -36,9 +36,10 @@ class MainScreen extends React.Component {
         }
     }
     componentDidMount(){
+        const {sceneNavigator} = this.props;
         const { clearOverlay, setOverlay} = this.props;
         clearOverlay();
-        setOverlay(<MainScreenOverlay/>);
+        setOverlay(<MainScreenOverlay sceneNavigator={sceneNavigator}/>);
     }
     render(){
         return (
