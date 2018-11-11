@@ -20,6 +20,29 @@ class FinalScene extends Component {
             text : "Final Screen"
         }
     }
+    findDirection(destinationAngle, positionAngle) {
+        let difference = positionAngle - destinationAngle;
+        let text = ""
+        if(difference < 180 && difference > 0) {
+            text = "turn Left by "+difference+"degrees";
+        } else if (difference > 180 && difference < 360) {
+            text = "turn Right by "+ (360-difference) +"degrees";
+        } else if (difference<0){
+            if(difference>-180){
+                text = "turn Right by "+ (-difference) +"degrees";
+            } else {
+                text = "turn Left by "+(360+difference)+"degrees";
+            }
+
+        } else {
+            text = "Error: Difference is"+difference;
+        }
+        if(difference<2 && difference>-2){
+            text="Head Straight"
+        }
+        this.setState({text});
+
+    }
     angleFromCoordinate(lat1, long1, lat2,long2) {
         const dLon = (long2 - long1);
         const y = Math.sin(dLon) * Math.cos(lat2);
@@ -41,13 +64,15 @@ class FinalScene extends Component {
          const { initialPosition, destinationPosition } = locationData;
         RNSimpleCompass.start(degree_update_rate, (degree) => {
             console.log('You are facing', degree);
-            console.log(this.angleFromCoordinate(initialPosition.latitude, initialPosition.longitude, destinationPosition.latitude, destinationPosition.longitude));
+            const destAngle = this.angleFromCoordinate(initialPosition.latitude, initialPosition.longitude, destinationPosition.latitude, destinationPosition.longitude);
+            this.findDirection(destAngle, degree);
+            console.log(destAngle);
             // RNSimpleCompass.stop();
         });
 
     }
     render(){
-         console.log("In FinalScene..")
+         console.log("In FinalScene..", this.state.text)
         return (
             <ViroARScene>
                 <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
