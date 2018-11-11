@@ -32,7 +32,7 @@ class MainScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-	        text : "Initializing AR..."
+	        text : ""
         }
     }
     componentDidMount(){

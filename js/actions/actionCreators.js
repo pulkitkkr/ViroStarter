@@ -25,7 +25,7 @@ export const clearOverlay = (dispatch) => {
 // Location Reducer
 
 export const setInitialPosition = (dispatch, content) => {
-    console.log("hellooo");
+    console.log(content);
     dispatch({
         type: SET_INITIAL_POSITION,
         payload: content

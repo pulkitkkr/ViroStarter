@@ -1,25 +1,31 @@
 import React from 'react';
 import { Text, View, StatusBar, StyleSheet, PermissionsAndroid } from 'react-native';
 import { connect } from 'react-redux';
-import { Header } from 'react-native-elements'
+import { Header, Card, Button, Icon} from 'react-native-elements';
+import Geolocation from 'react-native-geolocation-service';
+import MapView from 'react-native-maps';
+import { Dimensions } from 'react-native';
+const { width, height } = Dimensions.get('window');
+
 import {
     clearDestinationPosition,
     clearInitialPosition, clearIterativePosition,
-    clearOverlay,
     setDestinationPosition,
     setInitialPosition,
-    setIterativePosition,
-    setOverlay
+    setIterativePosition
 } from "../../../actions/actionCreators";
 
 class MainScreenOverlay extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            accessGranted: false
+            accessGranted: false,
+            showLoader: true
         }
     }
     requestLocationPermission = async () => {
+        const self = this;
+        const { setInitialPosition, setIterativePosition } = this.props;
         try {
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -31,6 +37,31 @@ class MainScreenOverlay extends React.Component {
             );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 console.log("You can use the Location Services now");
+                Geolocation.getCurrentPosition(
+                    (position) => {
+                        console.log(position)
+                        const lat = parseFloat(position.coords.latitude);
+                        const long = parseFloat(position.coords.longitude);
+                        const initialPosition = {
+                            latitude: lat,
+                            longitude: long,
+                        };
+                        setInitialPosition(initialPosition);
+                    },
+                    (error) => alert(error.message),
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+                );
+                self.watchID = Geolocation.watchPosition((position) => {
+                    const lat = parseFloat(position.coords.latitude);
+                    const long = parseFloat(position.coords.longitude);
+                    const iterativePosition ={
+                        latitude: lat,
+                        longitude: long,
+
+                    };
+                    setIterativePosition(iterativePosition);
+                });
+
             } else {
                 console.log("Location Permission denied");
             }
@@ -39,39 +70,33 @@ class MainScreenOverlay extends React.Component {
         }
     };
     componentDidMount = async () => {
+        const self = this;
+        setTimeout(()=>{self.setState({showLoader: false})},5000)
         await this.requestLocationPermission();
-        const { setInitialPosition, setIterativePosition } = this.props;
 
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = parseFloat(position.coords.latitude);
-                const long = parseFloat(position.coords.longitude);
-                const initialPosition = {
-                    latitude: lat,
-                    longitude: long,
-                };
-                setInitialPosition(initialPosition)();
-            },
-            (error) => alert(error.message),
-            { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
-        );
-        this.watchID = navigator.geolocation.watchPosition((position) => {
-            const lat = parseFloat(position.coords.latitude);
-            const long = parseFloat(position.coords.longitude);
-            const iterativePosition ={
-                latitude: lat,
-                longitude: long,
-
-            };
-            setIterativePosition(iterativePosition)();
-        });
     };
     componentWillUnmount = () => {
         navigator.geolocation.clearWatch(this.watchID);
     };
     render() {
-        const { locationData } = this.props;
-        console.table(this.props);
+        const { showLoader } = this.state;
+        const { locationData : {initialPosition} } = this.props;
+        let locationData = initialPosition;
+        let initialRegion = {
+            latitude: locationData.latitude,
+            longitude: locationData.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+        };
+        if(locationData.latitude == ''){
+            initialRegion = {
+                latitude:  28.621213,
+                longitude:  77.092333,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            }
+        }
+        console.log("locationData is:",locationData, "Initial  region is: ",initialRegion);
         return(
             <React.Fragment>
                 <StatusBar
@@ -84,23 +109,56 @@ class MainScreenOverlay extends React.Component {
                     centerComponent={{ text: 'AR Navigator', style: { color: '#fff', fontSize: 26 } }}
                     rightComponent={{ icon: 'refresh', size: 28, color: '#fff' }}
                 />
-                <View>
-                    <Text style = {styles.boldText}>
-                        Initial position:
-                    </Text>
+                {
+                    showLoader ? (
+                            <Card titleStyle={styles.cardTitleStyle} containerStyle={styles.cardContainer} title={"Loading"}>
+                                <Text style = {styles.cardText}>
+                                    Please Wait, While We are trying to get your Geo-Location.
+                                </Text>
+                            </Card>
+                        ) :
+                        (
+                            <Card
+                                titleStyle={styles.mapCardTitleStyle}
+                                containerStyle={styles.mapCardContainer}
+                                title={"We Found Your Location"}
+                            >
+                                <View style={{width: width - 60, height: height/2 - 50}}>
+                                    <MapView
+                                        style={styles.map}
+                                        initialRegion={initialRegion}
+                                        region = {
+                                            initialRegion
+                                        }
+                                    >
+                                        <MapView.Marker.Animated
+                                            coordinate={{
+                                                latitude: locationData.latitude ? locationData.latitude : 28.621213,
+                                                longitude: locationData.longitude ? locationData.longitude : 77.092333,
+                                            }}
+                                        />
+                                    </MapView>
+                                </View>
+                                <Button
+                                    icon={
+                                        <Icon
+                                            name='arrow-right'
+                                            size={15}
+                                            color='white'
+                                        />
+                                    }
+                                    buttonStyle={{
+                                        backgroundColor: "#03a9f4",
+                                        borderRadius: 5,
+                                        marginTop: 10
+                                    }}
+                                    title='Continue'
+                                />
 
-                    <Text style = {styles.locationText}>
-                        {locationData.initialPosition}
-                    </Text>
+                            </Card>
+                        )
+                }
 
-                    <Text style = {styles.boldText}>
-                        Current position:
-                    </Text>
-
-                    <Text style = {styles.locationText}>
-                        {locationData.iterativePosition}
-                    </Text>
-                </View>
             </React.Fragment>
         );
     }
@@ -128,6 +186,34 @@ const styles = StyleSheet.create ({
         alignItems: 'center',
         marginTop: 50
     },
+    cardTitleStyle: {
+        fontSize: 26,
+        color: '#0995ff',
+        fontWeight: "400"
+    },
+    cardContainer: {
+        opacity: 0.8,
+        borderColor: "#fefefe",
+        borderRadius: 5,
+    },
+    mapCardTitleStyle: {
+        fontSize: 26,
+        color: '#0995ff',
+        fontWeight: "400"
+    },
+    mapCardContainer: {
+        opacity: 0.8,
+        borderColor: "#fefefe",
+        borderRadius: 5,
+        minWidth: width-50,
+        minHeight: height/2,
+        marginTop: height/8
+    },
+    cardText: {
+        fontSize: 18,
+        alignSelf: 'center'
+    },
+
     boldText: {
         fontSize: 30,
         color: 'red',
@@ -135,6 +221,10 @@ const styles = StyleSheet.create ({
     locationText: {
         fontSize: 18,
         color: '#ffffff',
+    },
+    map: {
+        ...StyleSheet.absoluteFillObject,
+
     }
 });
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreenOverlay);
