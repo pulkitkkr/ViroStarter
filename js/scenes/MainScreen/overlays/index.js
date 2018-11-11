@@ -1,13 +1,21 @@
 import React from 'react';
-import { Text, View, StatusBar, StyleSheet, PermissionsAndroid } from 'react-native'
+import { Text, View, StatusBar, StyleSheet, PermissionsAndroid } from 'react-native';
+import { connect } from 'react-redux';
 import { Header } from 'react-native-elements'
+import {
+    clearDestinationPosition,
+    clearInitialPosition, clearIterativePosition,
+    clearOverlay,
+    setDestinationPosition,
+    setInitialPosition,
+    setIterativePosition,
+    setOverlay
+} from "../../../actions/actionCreators";
 
 class MainScreenOverlay extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            initialPosition: 'unknown',
-            lastPosition: 'unknown',
             accessGranted: false
         }
     }
@@ -32,23 +40,38 @@ class MainScreenOverlay extends React.Component {
     };
     componentDidMount = async () => {
         await this.requestLocationPermission();
+        const { setInitialPosition, setIterativePosition } = this.props;
+
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                const initialPosition = JSON.stringify(position);
-                this.setState({ initialPosition });
+                const lat = parseFloat(position.coords.latitude);
+                const long = parseFloat(position.coords.longitude);
+                const initialPosition = {
+                    latitude: lat,
+                    longitude: long,
+                };
+                setInitialPosition(initialPosition)();
             },
             (error) => alert(error.message),
-            { enableHighAccuracy: true, timeout: 2000000, maximumAge: 1000 }
+            { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
         );
         this.watchID = navigator.geolocation.watchPosition((position) => {
-            const lastPosition = JSON.stringify(position);
-            this.setState({ lastPosition });
+            const lat = parseFloat(position.coords.latitude);
+            const long = parseFloat(position.coords.longitude);
+            const iterativePosition ={
+                latitude: lat,
+                longitude: long,
+
+            };
+            setIterativePosition(iterativePosition)();
         });
     };
     componentWillUnmount = () => {
         navigator.geolocation.clearWatch(this.watchID);
     };
     render() {
+        const { locationData } = this.props;
+        console.table(this.props);
         return(
             <React.Fragment>
                 <StatusBar
@@ -67,7 +90,7 @@ class MainScreenOverlay extends React.Component {
                     </Text>
 
                     <Text style = {styles.locationText}>
-                        {this.state.initialPosition}
+                        {locationData.initialPosition}
                     </Text>
 
                     <Text style = {styles.boldText}>
@@ -75,13 +98,29 @@ class MainScreenOverlay extends React.Component {
                     </Text>
 
                     <Text style = {styles.locationText}>
-                        {this.state.lastPosition}
+                        {locationData.iterativePosition}
                     </Text>
                 </View>
             </React.Fragment>
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        locationData: state.location
+    }
+};
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setInitialPosition: content => setInitialPosition(dispatch, content),
+        setIterativePosition: content => setIterativePosition(dispatch, content),
+        setDestinationPosition: content => setDestinationPosition(dispatch, content),
+        clearInitialPosition: () => clearInitialPosition(dispatch),
+        clearIterativePosition: () => clearIterativePosition(dispatch),
+        clearDestinationPosition: () => clearDestinationPosition(dispatch)
+    }
+};
 
 const styles = StyleSheet.create ({
     container: {
@@ -98,4 +137,4 @@ const styles = StyleSheet.create ({
         color: '#ffffff',
     }
 });
-export default MainScreenOverlay; 
+export default connect(mapStateToProps, mapDispatchToProps)(MainScreenOverlay);

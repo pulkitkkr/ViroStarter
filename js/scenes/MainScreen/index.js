@@ -1,6 +1,15 @@
 'use strict';
 import React, { Component } from 'react';
-import { clearOverlay, setOverlay } from '../../actions/actionCreators';
+import {
+    clearOverlay,
+    setOverlay,
+    setInitialPosition,
+    setDestinationPosition,
+    setIterativePosition,
+    clearInitialPosition,
+    clearIterativePosition,
+    clearDestinationPosition
+} from '../../actions/actionCreators';
 import {StyleSheet, View, Text} from 'react-native';
 import MainScreenOverlay from './overlays';
 import {connect} from 'react-redux';
@@ -48,15 +57,16 @@ var styles = StyleSheet.create({
         textAlign: 'center',
     }
 });
-const mapStateToProps = (state) => {
-    return {
-        UserDetails: state.UserDetails
-    }
-}
 const mapDispatchToProps = (dispatch) => {
   return {
       clearOverlay: () => clearOverlay(dispatch),
-      setOverlay: (content) => setOverlay(dispatch, content)
+      setOverlay: content => setOverlay(dispatch, content),
+      setInitialPosition: content => setInitialPosition(dispatch, content),
+      setIterativePosition: content => setIterativePosition(dispatch, content),
+      setDestinationPosition: content => setDestinationPosition(dispatch, content),
+      clearInitialPosition: () => clearInitialPosition(dispatch),
+      clearIterativePosition: () => clearIterativePosition(dispatch),
+      clearDestinationPosition: () => clearDestinationPosition(dispatch)
   }
 };
-export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);
+export default connect(null, mapDispatchToProps)(MainScreen);
