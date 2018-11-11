@@ -1,22 +1,15 @@
 'use strict';
 import React, { Component } from 'react';
-import {
-    clearDestinationPosition,
-    clearInitialPosition, clearIterativePosition,
-    clearOverlay, setDestinationPosition, setInitialPosition, setIterativePosition,
-    setOverlay
-} from '../../actions/actionCreators';
 import {StyleSheet} from 'react-native';
-import NearbyScreenOverlay from './overlay';
 import {connect} from 'react-redux';
-
+import {clearOverlay, setOverlay} from '../../actions/actionCreators'
 import {
     ViroARScene,
     ViroText
 } from 'react-viro';
 
 
-class NearbyPlaces extends Component {
+class FinalScene extends Component {
 
     constructor(props) {
         super(props);
@@ -25,13 +18,13 @@ class NearbyPlaces extends Component {
         }
     }
     componentDidMount(){
-        const {sceneNavigator} = this.props;
+        // const {sceneNavigator} = this.props;
         const { clearOverlay, setOverlay} = this.props;
-        clearOverlay();
-        setOverlay(<NearbyScreenOverlay sceneNavigator={sceneNavigator}/>);
+         clearOverlay();
+        // setOverlay(<NearbyScreenOverlay sceneNavigator={sceneNavigator}/>);
     }
     render(){
-        console.log("In NearBy Places")
+         console.log("In FinalScene..")
         return (
             <ViroARScene>
                 <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
@@ -55,4 +48,4 @@ const mapDispatchToProps = (dispatch) => {
 
     }
 };
-export default connect(null, mapDispatchToProps)(NearbyPlaces);
+export default connect(null, mapDispatchToProps)(FinalScene);

@@ -6,7 +6,8 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "mac": "source ~/.bash_profile",
-    "vr": "react-native run-android --variant=gvrDebug"
+    "vr": "react-native run-android --variant=gvrDebug",
+    "build": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@material-ui/core": "^3.3.2",
