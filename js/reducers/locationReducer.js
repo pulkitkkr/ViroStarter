@@ -4,13 +4,16 @@ import {
     SET_DESTINATION_POSITION,
     CLEAR_INITIAL_POSITION,
     CLEAR_ITERATIVE_POSITION,
-    CLEAR_DESTINATION_POSITION
+    CLEAR_DESTINATION_POSITION,
+    SET_SELECTED_PLACE,
+    CLEAR_SELECTED_PLACE
 } from '../actions'
 
 const initialState = {
     initialPosition: '',
     iterativePosition: '',
     destinationPosition: '',
+    selectedPlace: ''
 };
 
 const locationReducer = (state = initialState, action) => {
@@ -29,6 +32,16 @@ const locationReducer = (state = initialState, action) => {
             return {
                 ...state,
                 destinationPosition: action.payload
+            };
+        case SET_SELECTED_PLACE:
+            return {
+                ...state,
+                selectedPlace: action.payload
+            };
+        case CLEAR_SELECTED_PLACE:
+            return {
+                ...state,
+                selectedPlace: ''
             };
         case CLEAR_INITIAL_POSITION:
             return {

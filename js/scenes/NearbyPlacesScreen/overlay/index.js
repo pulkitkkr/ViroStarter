@@ -7,7 +7,8 @@ import {FinalScene} from '../../index';
 import {googleMapsAPIKey} from '../../../common/configs';
 import axios from 'axios';
 import {
-    setDestinationPosition
+    setDestinationPosition,
+    setSelectedPlace
 } from "../../../actions/actionCreators";
 const { width, height } = Dimensions.get('window');
 
@@ -30,11 +31,12 @@ class NearbyScreenOverlay extends React.Component {
         });
     }
     onLocationSelect = place => {
-        const {setDestinationPosition, sceneNavigator} = this.props;
+        const {setDestinationPosition, sceneNavigator,setSelectedPlace} = this.props;
         let content = {
             longitude: place.geometry.location.lat,
             latitude: place.geometry.location.lng
         };
+        setSelectedPlace(place);
         setDestinationPosition(content);
         console.log(content);
         sceneNavigator.push({scene: FinalScene});
@@ -106,7 +108,8 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
     return {
-        setDestinationPosition: content => setDestinationPosition(dispatch, content)
+        setDestinationPosition: content => setDestinationPosition(dispatch, content),
+        setSelectedPlace: content => setSelectedPlace(dispatch, content)
     }
 };
 const styles = StyleSheet.create ({

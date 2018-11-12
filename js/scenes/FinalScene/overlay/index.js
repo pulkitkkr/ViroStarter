@@ -21,7 +21,7 @@ class FinalScreenOverlay extends React.Component {
     }
     render() {
         const { nearbyPlaces} = this.state;
-        const { locationData : {initialPosition} } = this.props;
+        const { locationData : {selectedPlace}, text } = this.props;
         return(
             <React.Fragment>
                 <StatusBar
@@ -34,6 +34,13 @@ class FinalScreenOverlay extends React.Component {
                     centerComponent={{ text: 'AR Navigator', style: { color: '#fff', fontSize: 26 } }}
                     rightComponent={{ icon: 'refresh', size: 28, color: '#fff' }}
                 />
+                {
+                    <Card titleStyle={styles.cardTitleStyle} containerStyle={styles.cardContainer} title={`${selectedPlace.name}`}>
+                        <Text style = {styles.cardText}>
+                            {text}
+                        </Text>
+                    </Card>
+                }
 
             </React.Fragment>
         );

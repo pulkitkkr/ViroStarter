@@ -17,30 +17,37 @@ class FinalScene extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            text : "Final Screen"
+            text : "Final Screen",
+            difference: -1
         }
     }
     findDirection(destinationAngle, positionAngle) {
         let difference = positionAngle - destinationAngle;
         let text = ""
         if(difference < 180 && difference > 0) {
-            text = "turn Left by "+difference+"degrees";
+            text = "turn Left by "+parseFloat(difference).toFixed(2)+" degrees";
         } else if (difference > 180 && difference < 360) {
-            text = "turn Right by "+ (360-difference) +"degrees";
+            text = "turn Right by "+ parseFloat(360-difference).toFixed(2) +" degrees";
         } else if (difference<0){
             if(difference>-180){
-                text = "turn Right by "+ (-difference) +"degrees";
+                text = "turn Right by "+ parseFloat(-difference).toFixed(2) +" degrees";
             } else {
-                text = "turn Left by "+(360+difference)+"degrees";
+                text = "turn Left by "+parseFloat(360+difference).toFixed(2)+" degrees";
             }
 
         } else {
-            text = "Error: Difference is"+difference;
+            text = "Error: Difference is"+parseFloat(difference).toFixed(2);
         }
-        if(difference<2 && difference>-2){
-            text="Head Straight"
+        let flag = false;
+        if(difference<9 && difference>-9){
+            text="Head Straight, You will Reach your Destination";
+            flag = true;
         }
-        this.setState({text});
+        if(flag) {
+            this.setState({text, difference: 0});
+        } else {
+            this.setState({text, difference: difference});
+        }
 
     }
     angleFromCoordinate(lat1, long1, lat2,long2) {
@@ -59,7 +66,7 @@ class FinalScene extends Component {
         const {sceneNavigator} = this.props;
         const { clearOverlay, setOverlay, locationData} = this.props;
          clearOverlay();
-         setOverlay(<FinalScreenOverlay sceneNavigator={sceneNavigator}/>);
+         setOverlay(<FinalScreenOverlay text={""} sceneNavigator={sceneNavigator}/>);
 
          const { initialPosition, destinationPosition } = locationData;
         RNSimpleCompass.start(degree_update_rate, (degree) => {
@@ -72,13 +79,27 @@ class FinalScene extends Component {
 
     }
     render(){
-         console.log("In FinalScene..", this.state.text)
-        return (
-            <ViroARScene>
-                <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
-            </ViroARScene>
+         const {text, difference} =this.state;
+         const { clearOverlay, setOverlay, sceneNavigator } = this.props
+        clearOverlay();
+        setOverlay(<FinalScreenOverlay text={text} sceneNavigator={sceneNavigator}/>);
+        if(difference ==0) {
+            console.log("Rendering 0000000")
+            return (
+                <ViroARScene>
+                    <ViroText text={"Go Here"} scale={[.5, .5, .5]} position={[-5, 0, -1]} style={styles.helloWorldTextStyle} />
+                </ViroARScene>
 
-        );
+            );
+        } else {
+
+            return (
+                <ViroARScene>
+                    <ViroText text={""} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
+                </ViroARScene>
+
+            );
+        }
     }
 
 }
@@ -98,7 +119,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         clearOverlay: () => clearOverlay(dispatch),
         setOverlay: content => setOverlay(dispatch, content)
-
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(FinalScene);

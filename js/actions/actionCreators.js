@@ -6,12 +6,13 @@ import {
     SET_DESTINATION_POSITION,
     CLEAR_INITIAL_POSITION,
     CLEAR_ITERATIVE_POSITION,
-    CLEAR_DESTINATION_POSITION
+    CLEAR_DESTINATION_POSITION,
+    SET_SELECTED_PLACE,
+    CLEAR_SELECTED_PLACE
 } from '../actions'
 
 // Overlay reducers
 export const setOverlay = (dispatch, content) => {
-    console.log(dispatch)
     dispatch({
         type: SET_OVERLAY,
         payload: content
@@ -26,7 +27,6 @@ export const clearOverlay = (dispatch) => {
 // Location Reducer
 
 export const setInitialPosition = (dispatch, content) => {
-    console.log(content);
     dispatch({
         type: SET_INITIAL_POSITION,
         payload: content
@@ -42,6 +42,17 @@ export const setDestinationPosition = (dispatch, content) => {
     dispatch({
         type: SET_DESTINATION_POSITION,
         payload: content
+    });
+};
+export const setSelectedPlace = (dispatch, content) => {
+    dispatch({
+        type: SET_SELECTED_PLACE,
+        payload: content
+    });
+};
+export const clearSelectedPlace = (dispatch) => {
+    dispatch({
+        type: CLEAR_SELECTED_PLACE
     });
 };
 export const clearInitialPosition = (dispatch) => {
